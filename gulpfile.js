@@ -7,6 +7,13 @@ const fileInclude = require('gulp-file-include');
 const htmlmin = require('gulp-htmlmin');
 const size = require('gulp-size');
 const browserSync = require('browser-sync').create();
+const del = require('del');
+
+
+//Удаление директории
+const clear = () => {
+   return del('./public')
+}
 
 //Обработка HTML
 const html = () => {
@@ -32,6 +39,7 @@ const watcher = () => {
 // Задачи
 exports.html = html
 exports.watch = watcher
+exports.clear = clear
 //Сервер
 const server = () => {
    browserSync.init({
@@ -44,6 +52,7 @@ const server = () => {
 
 //Сборка
 exports.dev = series(
+   clear,
    html,
    parallel(watcher, server)
 )
