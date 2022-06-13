@@ -8,6 +8,8 @@ const htmlmin = require('gulp-htmlmin');
 const size = require('gulp-size');
 const browserSync = require('browser-sync').create();
 const del = require('del');
+const pugs = require('gulp-pug');
+
 
 
 //Удаление директории
@@ -31,13 +33,31 @@ const html = () => {
       .pipe(browserSync.stream())
 }
 
-//Наблюдение
-const watcher = () => {
-   watch('src/html/**/*.html', html)
+//Обработка Pug
+const pug = () => {
+   return src('./src/pug/**/*.pug')
+      .pipe(plumber({
+         errorHandler: notify.onError(error => ({
+            title: 'Pug',
+            message: error.message
+         }))
+      }))
+      .pipe(pugs({
+         pretty: true,
+         data: {
+            news: require('./data/news.json')
+         }
+      }))
+      .pipe(dest('./public'))  
+      .pipe(browserSync.stream())
 }
 
+//Наблюдение
+const watcher = () => {
+   watch('./src/pug/**/*.pug', pug)
+}
 // Задачи
-exports.html = html
+exports.pug = pug
 exports.watch = watcher
 exports.clear = clear
 //Сервер
@@ -53,6 +73,6 @@ const server = () => {
 //Сборка
 exports.dev = series(
    clear,
-   html,
+   pug,
    parallel(watcher, server)
 )
