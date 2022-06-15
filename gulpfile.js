@@ -1,74 +1,32 @@
 //Подключение к Gulp и взятие из него методов которые будут использоваться в моем проекте
-const{src, dest, watch, series, parallel} = require('gulp')
-//Плагины
-const plumber = require('gulp-plumber');
-const notify = require('gulp-notify');
-const fileInclude = require('gulp-file-include');
-const htmlmin = require('gulp-htmlmin');
-const size = require('gulp-size');
+const{watch, series, parallel} = require('gulp');
 const browserSync = require('browser-sync').create();
-const del = require('del');
-const pugs = require('gulp-pug');
 
+//Конфигурация
+const path = require('./config/path.js')
 
-
-//Удаление директории
-const clear = () => {
-   return del('./public')
-}
-
-//Обработка HTML
-const html = () => {
-   return src('./src/html/*.html')
-      .pipe(plumber({
-         errorHandler: notify.onError()
-      }))
-      .pipe(fileInclude())
-      .pipe(size({title: 'До сжатия'}))
-      .pipe(htmlmin({ 
-         collapseWhitespace: true 
-      }))
-      .pipe(size({title: 'После сжатия'}))
-      .pipe(dest('./public'))  
-      .pipe(browserSync.stream())
-}
-
-//Обработка Pug
-const pug = () => {
-   return src('./src/pug/**/*.pug')
-      .pipe(plumber({
-         errorHandler: notify.onError(error => ({
-            title: 'Pug',
-            message: error.message
-         }))
-      }))
-      .pipe(pugs({
-         pretty: true,
-         data: {
-            news: require('./data/news.json')
-         }
-      }))
-      .pipe(dest('./public'))  
-      .pipe(browserSync.stream())
-}
-
-//Наблюдение
-const watcher = () => {
-   watch('./src/pug/**/*.pug', pug)
-}
 // Задачи
-exports.pug = pug
-exports.watch = watcher
-exports.clear = clear
+const clear = require('./task/clear.js')
+const pug = require('./task/pug.js')
+
 //Сервер
 const server = () => {
    browserSync.init({
       server: {
-         baseDir: 'public'
+         baseDir: path.root
       }
    })
 }
 
+//Наблюдение
+const watcher = () => {
+   watch(path.pug.watch, pug).on('all', browserSync.reload)
+}
+
+//ЗаДачи
+exports.pug = pug;
+exports.watch = watcher;
+exports.clear = clear;
 
 //Сборка
 exports.dev = series(
