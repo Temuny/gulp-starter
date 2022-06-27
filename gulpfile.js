@@ -8,7 +8,7 @@ const path = require('./config/path.js')
 // Задачи
 const clear = require('./task/clear.js')
 const pug = require('./task/pug.js')
-const css = require('./task/css.js')
+const scss = require('./task/scss.js')
 
 //Сервер
 const server = () => {
@@ -22,18 +22,18 @@ const server = () => {
 //Наблюдение
 const watcher = () => {
    watch(path.pug.watch, pug).on('all', browserSync.reload)
-   watch(path.css.watch, css).on('all', browserSync.reload)
+   watch(path.scss.watch, scss).on('all', browserSync.reload)
 }
 
 //ЗаДачи
 exports.pug = pug;
-exports.css = css;
+exports.scss = scss;
 
 
 //Сборка
 exports.dev = series(
    clear,
    pug,
-   parallel(pug, css),
+   parallel(pug, scss),
    parallel(watcher, server)
 )
