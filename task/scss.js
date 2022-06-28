@@ -12,6 +12,7 @@ const rename = require('gulp-rename');
 const shorthand = require('gulp-shorthand');
 const groupCssMediaQueries = require('gulp-group-css-media-queries');
 const sass = require('gulp-sass')(require('sass'));
+const sassGlob = require('gulp-sass-glob')
 
 
 //Обработка SCSS
@@ -23,6 +24,7 @@ const scss = () => {
             message: error.message
          }))
       }))
+      .pipe(sassGlob())
       .pipe(sass())
       .pipe(autoprefixer())
       .pipe(shorthand())
