@@ -2,7 +2,7 @@
 const{src, dest} = require('gulp')
 //Конфигурации
 const path = require('../config/path.js')
-const app = require('../config/path.js')
+const app = require('../config/app.js')
 //Плагины
 const plumber = require('gulp-plumber');
 const notify = require('gulp-notify');

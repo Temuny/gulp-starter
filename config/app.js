@@ -8,5 +8,13 @@ module.exports = {
       data: {
          news: require('../data/news.json')
       }
+   },
+
+   webpack:{
+      mode: 'production'
+   },
+
+   imagemin: {
+      verbose: true
    }
 }
