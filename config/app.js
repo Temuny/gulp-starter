@@ -3,7 +3,7 @@ module.exports = {
       collapseWhitespace: true 
    },
 
-   pug:{
+   pug: {
       pretty: true,
       data: {
          news: require('../data/news.json')
